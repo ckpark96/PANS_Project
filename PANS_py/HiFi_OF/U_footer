@@ -1,0 +1,32 @@
+
+boundaryField
+{
+    Side
+    {
+        type            empty;
+    }
+    Inlet
+    {
+        type            fixedValue;
+        value           uniform (16.6 0 0);
+    }
+    topWall
+    {
+        type            noSlip;
+    }
+    botWall
+    {
+        type            noSlip;
+    }
+    Prism
+    {
+        type            noSlip;
+    }
+    Outlet
+    {
+        type            zeroGradient;
+    }
+}
+
+
+// ************************************************************************* //

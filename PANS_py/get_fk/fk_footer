@@ -1,0 +1,30 @@
+)
+;
+
+boundaryField
+{
+    inlet
+    {
+        type            calculated;
+        value           uniform 1.0;
+    }
+    outlet
+    {
+        type            calculated;
+        value           uniform 1.0;
+    }
+    upperWall
+    {
+        type            calculated;
+        value           uniform 0.1;
+    }
+    lowerWall
+    {
+        type            calculated;
+        value           uniform 0.1;
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+}
