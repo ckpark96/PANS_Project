@@ -6,7 +6,7 @@ import shutil
 import numpy as np
 import pandas as pd
 
-params = ["pressure_avg", "vel", "k", "tauij"]
+
 ### need to loop through all time steps
 ### This is for a single time step
 time = 0.1
@@ -14,14 +14,11 @@ time = 0.1
 df = pd.read_csv('TESTCSV.csv')
 blockNames = pd.unique(df['Block Name'])
 
-# shutil.copy2('OF_header', 'copy_1')
-# copy1_file = open("copy_1","a")
-
 # Write location line which includes the time step
 Loc = '    location    "' + str(time) + '";\n' 
 
 veldim = "[0 1 -1 0 0 0 0]"
-pdim   = "[0 2 -2 0 0 0 0]"
+pdim   = "[0 2 -2 0 0 0 0]" # OF uses kinematic pressure = pres/rho
 kdim   = pdim
 taudim = pdim
 
@@ -29,8 +26,6 @@ for block in blockNames: # various boundaries
     blockBool = df['Block Name']==block
     N = np.sum(blockBool)
 
-    # shutil.copy2('copy_1', 'copy_2')
-    # copy2_file = open("copy_2","a")
 
     if block=='internalMesh':
         fields = df[blockBool] # remove other boundaries
@@ -85,7 +80,6 @@ for block in blockNames: # various boundaries
         copy_vel_file.write(")\n;\n")
 
         velFooter_file = open('U_footer','r')
-        print('hello')
         copy_vel_file.write(velFooter_file.read())
         velFooter_file.close()
         copy_vel_file.close()
