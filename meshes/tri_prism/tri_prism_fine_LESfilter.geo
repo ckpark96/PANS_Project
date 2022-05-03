@@ -97,7 +97,7 @@ Line(40) = {24, 22};
 Line(41) = {25, 23};
 
 //+
-nxnear   = 100;
+nxnear   = 50;
 nxfar    = 150;
 nxmid    = 50; // wake of prism
 nyinlet  = 140;
@@ -110,12 +110,12 @@ Transfinite Curve {34, 35} = nxfar Using Progression 1.0;
 Transfinite Curve {37, 38} = nxfar Using Progression 1.0;
 Transfinite Curve {40, 41} = nxfar Using Progression 1.0;
 
-Transfinite Curve {24, 25} = nxnear Using Progression 0.97;
-Transfinite Curve {28, 29} = nxnear Using Progression 0.97;
-Transfinite Curve {32, 33} = nxnear Using Progression 0.95;
-Transfinite Curve {16, 17} = nxnear Using Progression 0.96;
+Transfinite Curve {24, 25} = nxnear Using Progression 1;
+Transfinite Curve {28, 29} = nxnear Using Progression 1;
+Transfinite Curve {32, 33} = nxnear Using Progression 1;
+Transfinite Curve {16, 17} = nxnear Using Progression 1;
 
-Transfinite Curve {3} = nxmid Using Bump 0.2;
+Transfinite Curve {3} = nxmid Using Bump 1;
 Transfinite Curve {36} = nxmid Using Bump 0.5;
 Transfinite Curve {39} = nxmid Using Bump 0.9;
 
@@ -123,7 +123,7 @@ Transfinite Curve {4} = nyinlet Using Progression 0.996;
 Transfinite Curve {5, 6, 7, 8} = nyinlet Using Progression 1;
 Transfinite Curve {9} = nyinlet2 Using Progression 0.99;
 Transfinite Curve {10, 11, 12, 13} = nyinlet2 Using Bump 3;
-Transfinite Curve {1, 2} = nymid Using Bump 0.24;
+Transfinite Curve {1, 2} = nymid Using Bump 1;
 Transfinite Curve {14, 15} = nymid Using Progression 1;
 Transfinite Curve {18, 19} = nymid Using Progression 1;
 Transfinite Curve {20, 21, 22, 23} = nyfar Using Progression 0.999;

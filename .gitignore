@@ -140,3 +140,7 @@ out.dat
 *.vtk
 *.msh
 *.png
+
+# Simulation folders
+simulations/
+PANS_py/phase_average/sim
