@@ -1,0 +1,115 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2006                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver           GAMG;
+        smoother         DICGaussSeidel;
+        tolerance        1e-06;
+        relTol           0.01;
+    }
+
+    pFinal
+    {
+        $p;
+        relTol          0;
+    }
+
+    "(U)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        //preconditioner  DILU;
+        tolerance       1e-06;
+        relTol          0.1;
+    }    
+    
+    "(U)Final"
+    {
+        $U;
+        relTol          0;
+    }
+    
+    "(omega|omegaU|k)"
+    {
+        solver          smoothSolver; //PBiCGStab;
+        smoother        symGaussSeidel;
+        //preconditioner  DILU;
+        tolerance       1e-06;
+        relTol          0.1;
+    }
+    
+    "(omega|omegaU|k)Final"
+    {
+        $omega;
+        relTol          0;
+    }
+
+
+}
+
+relaxationFactors // most often for steady-state solution
+{
+    //fields
+    //{
+    //	p		  0.6;
+        //pFinal            0.9; This seems to have caused some problem restricting temporal change
+    //}
+    equations
+    {
+        "(U|k|omega)"      0.6; // large effect on convergence -> lower value converged better
+        "(U|k|omega)Final" 1.0;
+        //".*"	1.0; // usually for PIMPLEfoam factor of 1 is for having no under-relaxation while ensuring matrix diagonal equality
+    }
+}
+PIMPLE
+{
+    nNonOrthogonalCorrectors 1;
+    nOuterCorrectors	     500;
+    nCorrectors              2;
+    pRefCell                 0;
+    pRefValue                0;
+    
+    residualControl
+    {
+    	U
+    	{
+    		tolerance 1e-04;
+    		relTol	  0;
+    	}
+    	p
+    	{
+    		tolerance 5e-04;
+    		relTol	  0;
+    	}
+    	k
+    	{
+    		tolerance 1e-04;
+    		relTol	  0;
+    	}
+    	omega
+    	{
+    		tolerance 1e-04;
+    		relTol	  0;
+    	}
+    }
+}
+
+
+// ************************************************************************* //
