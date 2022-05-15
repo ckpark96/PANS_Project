@@ -45,7 +45,8 @@ def phase_avg_params_LES(res, foldername, paramfile):
     FFTlift = np.abs(_lift[:N//2])
     FFTfreq = _freq[:N//2]
 
-    # ax[0].plot(FFTfreq, fftlift, marker='.') # 2nd half is just a mirror image of the first half 
+    fig,ax = plt.subplots()
+    ax.plot(FFTfreq, FFTlift, marker='.') # 2nd half is just a mirror image of the first half 
 
     ####### Plot some frequencies of corresponding strouhal numbers ################
     # _L = 0.034641
@@ -84,8 +85,9 @@ def phase_avg_params_LES(res, foldername, paramfile):
     liftfunc = interp1d(Time, Lift0, 'quadratic', fill_value='extrapolate')
 
     num_zeros = 30
-    xguess = np.array([0.1772, 0.1814, 0.1856, 0.1897, 0.1941, 0.1985, 0.2022, 0.2064, 0.2102, 0.2141, 0.2181, 0.2222, 0.2265, 0.2306, 0.2346, 0.2391, 0.2430, 0.2474, 0.2515, 0.2552, 0.2591, 0.2635, 0.2678, 0.2721, 0.2761, 0.2801, 0.2844, 0.2887, 0.2928, 0.2968])
-    print(xguess[1:]-xguess[:-1])
+    xguess = np.array([0.1772, 0.1814, 0.1856, 0.1897, 0.1941, 0.1985, 0.2022, 0.2064,\
+         0.2102, 0.2141, 0.2181, 0.2222, 0.2265, 0.2306, 0.2346, 0.2391, 0.2430, 0.2474,\
+              0.2515, 0.2552, 0.2591, 0.2635, 0.2678, 0.2721, 0.2761, 0.2801, 0.2844, 0.2887, 0.2928, 0.2968])
     zerotimes = fsolve(liftfunc, xguess)
     plt.scatter(zerotimes, np.zeros_like(zerotimes), color='r', label='roots')
 
@@ -187,9 +189,9 @@ def phase_avg_params_LES(res, foldername, paramfile):
             pres_gather = np.hstack((pres_gather,pres))
 
 
-    # ####################### Creating phase averaged data
+    ####################### Creating phase averaged data #####################@##
 
-    # ###### create functions for each parameter
+    ###### create functions for each parameter
     x_vel_func = interp1d(time, x_vel_gather) # automatically interpolates in the last axis which is the time axis in this case
     y_vel_func = interp1d(time, y_vel_gather)
     z_vel_func = interp1d(time, z_vel_gather)
@@ -206,8 +208,15 @@ def phase_avg_params_LES(res, foldername, paramfile):
 
         if k < num_zeros//2:
             firstzero = zerotimes[2*k]
-            secondzero = zerotimes[2*k+2]
-            _t = np.linspace(firstzero, secondzero, res+1)[:-1]
+            secondzero = zerotimes[2*k+2] # actually it's not second zero but third zero which completes a period
+            # _t = np.linspace(firstzero, secondzero, res+1)[:-1] ##### This need to be changed
+            print(period_avg  / 1e-4)
+            print(period_avg  // 1e-4)
+            Num_steps = int(period_avg  / 1e-4) + 1
+            print('Number of time steps:', Num_steps)
+            _t = np.arange(0, period_avg, 1e-4) + firstzero
+            print(_t)
+            print('Validate num steps:', _t.shape[0])
             _partial_x_vel = x_vel_func(_t)
             # print(_partial_x_vel.shape)
             _partial_y_vel = y_vel_func(_t)
@@ -263,23 +272,25 @@ def phase_avg_params_LES(res, foldername, paramfile):
 
         z_coord = np.zeros_like(x_coord, dtype=float)
 
-        print(x_coord.shape)
-        print(x_vel_avg.shape)
+        # print(x_coord.shape)
+        # print(x_vel_avg.shape)
 
-    for r in np.arange(res):
+    for r in np.arange(_t.shape[0]):
 
         newdata = {'Point_0': x_coord, 'Point_1': y_coord, 'Point_2': z_coord, 'Velocity_0': x_vel_avg[:,r], 'Velocity_1': y_vel_avg[:,r], \
         'Velocity_2': z_vel_avg[:,r], 'tau_11': tau_11_avg[:,r], 'tau_12': tau_12_avg[:,r], 'tau_13': tau_13_avg[:,r], 'tau_22': tau_22_avg[:,r], \
         'tau_23': tau_23_avg[:,r], 'tau_33': tau_33_avg[:,r], 'k': k_avg[:,r], 'Pressure': pres_avg[:,r]}
 
         newdf = pd.DataFrame(newdata)
-        newfilename = 'LESPhaseAvgData/LESPhaseAvg_'+str(r)
+        newfilename = 'LESPhaseAvgData/LESPhaseAvg_'+str(r) +'.csv'
 
         ##### Write into .csv data files
-        # newdf.to_csv(newfilename, index=False)
+        newdf.to_csv(newfilename, index=False)
 
     return
 
 
+
 resolution = 100 # 100 time steps within 1 period
-phase_avg_params_LES(resolution, 'LES_flattened_kData/', 'LESdata_')
+phase_avg_params_LES(resolution, 'SolFlat_OFmesh_kcalc/', 'LES_kData_')
+plt.show()

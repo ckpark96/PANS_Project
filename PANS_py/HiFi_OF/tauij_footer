@@ -1,0 +1,30 @@
+boundaryField
+{
+    Side
+    {
+        type            empty;
+    }
+    Inlet
+    {
+        type            calculated;
+        value           uniform (0 0 0 0 0 0);
+    }
+    topWall
+    {
+        type            calculated;
+        value           uniform (0 0 0 0 0 0);
+    }
+    botWall
+    {
+        type            calculated;
+        value           uniform (0 0 0 0 0 0);
+    }
+    Prism
+    {
+        type            calculated;
+        value           uniform (0 0 0 0 0 0);
+    }
+    Outlet
+    {
+        type            calculated;
+        value           nonuniform List<symmTensor> 

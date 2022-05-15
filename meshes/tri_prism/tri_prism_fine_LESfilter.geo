@@ -1,9 +1,9 @@
-xinlet      = -0.1;
-xinlet2     = -0.015;
-xoutlet     = 0.5;
+xinlet      = -0.01;
+xinlet2     = -0.005;
+xoutlet     = 0.4;
 xtriFront   = 0;
 xtriRear    = 0.034641;
-xtriRear2   = 0.0435;
+xtriRear2   = 0.045;
 ynearTri    = 0.02;
 ynearInlet1 = 0.032;
 ynearInlet  = 0.03;
@@ -97,13 +97,13 @@ Line(40) = {24, 22};
 Line(41) = {25, 23};
 
 //+
-nxnear   = 50;
-nxfar    = 150;
+nxnear   = 25;
+nxfar    = 25;
 nxmid    = 50; // wake of prism
-nyinlet  = 140;
-nyinlet2 = 50;
-nymid    = 60; // prism sides
-nyfar    = 400;
+nyinlet  = 9;
+nyinlet2 = 10;
+nymid    = 70; // prism sides
+nyfar    = 160;
 //+
 Transfinite Curve {26, 30, 27, 31} = nxfar Using Progression 1.00;
 Transfinite Curve {34, 35} = nxfar Using Progression 1.0;
@@ -116,17 +116,17 @@ Transfinite Curve {32, 33} = nxnear Using Progression 1;
 Transfinite Curve {16, 17} = nxnear Using Progression 1;
 
 Transfinite Curve {3} = nxmid Using Bump 1;
-Transfinite Curve {36} = nxmid Using Bump 0.5;
-Transfinite Curve {39} = nxmid Using Bump 0.9;
+Transfinite Curve {36} = nxmid Using Bump 1;
+Transfinite Curve {39} = nxmid Using Bump 1;
 
-Transfinite Curve {4} = nyinlet Using Progression 0.996;
-Transfinite Curve {5, 6, 7, 8} = nyinlet Using Progression 1;
-Transfinite Curve {9} = nyinlet2 Using Progression 0.99;
-Transfinite Curve {10, 11, 12, 13} = nyinlet2 Using Bump 3;
+Transfinite Curve {4} = nyinlet Using Progression 1;
+Transfinite Curve {5, 6, 7, 8} = nyinlet Using Progression 0.965;
+Transfinite Curve {9} = nyinlet2 Using Progression 1;
+Transfinite Curve {10, 11, 12, 13} = nyinlet2 Using Bump 1;
 Transfinite Curve {1, 2} = nymid Using Bump 1;
-Transfinite Curve {14, 15} = nymid Using Progression 1;
+Transfinite Curve {14, 15} = nymid Using Progression 1.0;
 Transfinite Curve {18, 19} = nymid Using Progression 1;
-Transfinite Curve {20, 21, 22, 23} = nyfar Using Progression 0.999;
+Transfinite Curve {20, 21, 22, 23} = nyfar Using Progression 0.984;
 //+
 Curve Loop(1) = {24, 4, -28, -5};
 Plane Surface(1) = {1};
@@ -179,7 +179,7 @@ Transfinite Surface {15};
 Transfinite Surface {16};
 Recombine Surface {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 Extrude {0, 0, -0.05} {
-  Surface{1}; Surface{2}; Surface{3}; Surface{4}; Surface{5}; Surface{6}; Surface{7}; Surface{8}; Surface{9}; Surface{10}; Surface{11}; Surface{12}; Surface{13}; Surface{14}; Surface{15}; Surface{16}; Layers{1}; Recombine;
+  Surface{1}; Surface{2}; Surface{3}; Surface{4}; Surface{5}; Surface{6}; Surface{7}; Surface{8}; Surface{9}; Surface{10}; Surface{11}; Surface{12}; Surface{13}; Surface{14}; Surface{15}; Surface{16}; Layers{20}; Recombine;
 }
 //+
 Physical Surface("Inlet") = {94, 50, 72, 116};
