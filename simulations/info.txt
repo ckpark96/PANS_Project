@@ -1,2 +1,0 @@
-Simulations to be added once all the required configurations have reached good convergence
-

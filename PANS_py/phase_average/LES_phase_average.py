@@ -18,7 +18,6 @@ paramfile = 'LESparams_'
 def phase_avg_params_LES(res, foldername, paramfile):
     '''
     Input:
-        res: resolution wanted in a single period
         foldername: name of the paramater file containing folder including '/' at the end
         paramfile: name of the file uptil the number which represents the timestep number
     
@@ -116,6 +115,8 @@ def phase_avg_params_LES(res, foldername, paramfile):
     plt.plot(plot_t, lift_avg, color='k', label='average')
 
     phase_coord = np.linspace(0, 2*np.pi+0.001, res)
+    # phase_coord = np.arange(0, period_avg, 0.001)
+    print(phase_coord)
 
     plt.figure()
     plt.plot(phase_coord, lift_avg)
@@ -131,15 +132,15 @@ def phase_avg_params_LES(res, foldername, paramfile):
 
         filename = foldername + paramfile + str(int(i)) + '.csv'
         df = pd.read_csv(filename)
-        df = df.sort_values(by=['Points:1']) # sort accord to increasing y-coord value
+        # df = df.sort_values(by=['Points:1']) # sort accord to increasing y-coord value
         t = df['Time'][0] # every row has the same time value for each file so just take the first
         time[int(i)] = t
-        if i == 0:
-            x_coord = df['Points:0']
-            y_coord = df['Points:1']
-        x_vel = df['Velocity_0']
-        y_vel = df['Velocity_1']
-        z_vel = df['Velocity_2']
+        # if i == 0:
+        #     x_coord = df['Points:0']
+        #     y_coord = df['Points:1']
+        x_vel = df['Velocity:0']
+        y_vel = df['Velocity:1']
+        z_vel = df['Velocity:2']
         tau_11 = df['tau_11']
         tau_12 = df['tau_12']
         tau_13 = df['tau_13']
@@ -147,7 +148,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
         tau_23 = df['tau_23']
         tau_33 = df['tau_33']
         k = df['k']
-        pres = df['Pressure']
+        # pres = df['Pressure']
 
         x_vel = np.reshape(x_vel.to_numpy(), (x_vel.shape[0],1))
         y_vel = np.reshape(y_vel.to_numpy(), (y_vel.shape[0],1))
@@ -159,7 +160,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
         tau_23 = np.reshape(tau_23.to_numpy(), (tau_23.shape[0],1))
         tau_33 = np.reshape(tau_33.to_numpy(), (tau_33.shape[0],1))
         k = np.reshape(k.to_numpy(), (k.shape[0],1))
-        pres = np.reshape(pres.to_numpy(), (pres.shape[0],1))
+        # pres = np.reshape(pres.to_numpy(), (pres.shape[0],1))
 
 
 
@@ -174,7 +175,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
             tau_23_gather = tau_23
             tau_33_gather = tau_33
             k_gather = k
-            pres_gather = pres
+            # pres_gather = pres
         else:
             x_vel_gather = np.hstack((x_vel_gather,x_vel))
             y_vel_gather = np.hstack((y_vel_gather,y_vel))
@@ -186,7 +187,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
             tau_23_gather = np.hstack((tau_23_gather,tau_23))
             tau_33_gather = np.hstack((tau_33_gather,tau_33))
             k_gather = np.hstack((k_gather,k))
-            pres_gather = np.hstack((pres_gather,pres))
+            # pres_gather = np.hstack((pres_gather,pres))
 
 
     ####################### Creating phase averaged data #####################@##
@@ -202,7 +203,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
     tau_23_func = interp1d(time, tau_23_gather)
     tau_33_func = interp1d(time, tau_33_gather)
     k_func = interp1d(time, k_gather)
-    pres_func = interp1d(time, pres_gather)
+    # pres_func = interp1d(time, pres_gather)
 
     for k in np.arange((num_zeros-1)//2): # Number of waves = int(Nzero-1 / 2)
 
@@ -228,7 +229,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
             _partial_tau_23 = tau_23_func(_t)
             _partial_tau_33 = tau_33_func(_t)
             _partial_k = k_func(_t)
-            _partial_pres = pres_func(_t)
+            # _partial_pres = pres_func(_t)
             
 
         else:
@@ -242,7 +243,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
             _partial_tau_23 = np.zeros_like(_partial_tau_23, dtype=float)
             _partial_tau_33 = np.zeros_like(_partial_tau_33, dtype=float)
             _partial_k = np.zeros_like(_partial_k, dtype=float)
-            _partial_pres = np.zeros_like(_partial_pres, dtype=float)
+            # _partial_pres = np.zeros_like(_partial_pres, dtype=float)
 
         if k == 0:
             x_vel_avg = _partial_x_vel
@@ -255,7 +256,7 @@ def phase_avg_params_LES(res, foldername, paramfile):
             tau_23_avg = _partial_tau_23
             tau_33_avg = _partial_tau_33
             k_avg = _partial_k
-            pres_avg = _partial_pres
+            # pres_avg = _partial_pres
 
         else:
             x_vel_avg = 1/(k+1) * (k*x_vel_avg + _partial_x_vel)
@@ -268,21 +269,25 @@ def phase_avg_params_LES(res, foldername, paramfile):
             tau_23_avg = 1/(k+1) * (k*tau_23_avg + _partial_tau_23)
             tau_33_avg = 1/(k+1) * (k*tau_33_avg + _partial_tau_33)
             k_avg = 1/(k+1) * (k*k_avg + _partial_k)
-            pres_avg = 1/(k+1) * (k*pres_avg + _partial_pres)
+            # pres_avg = 1/(k+1) * (k*pres_avg + _partial_pres)
 
-        z_coord = np.zeros_like(x_coord, dtype=float)
+        # z_coord = np.zeros_like(x_coord, dtype=float)
 
         # print(x_coord.shape)
         # print(x_vel_avg.shape)
 
     for r in np.arange(_t.shape[0]):
 
-        newdata = {'Point_0': x_coord, 'Point_1': y_coord, 'Point_2': z_coord, 'Velocity_0': x_vel_avg[:,r], 'Velocity_1': y_vel_avg[:,r], \
-        'Velocity_2': z_vel_avg[:,r], 'tau_11': tau_11_avg[:,r], 'tau_12': tau_12_avg[:,r], 'tau_13': tau_13_avg[:,r], 'tau_22': tau_22_avg[:,r], \
-        'tau_23': tau_23_avg[:,r], 'tau_33': tau_33_avg[:,r], 'k': k_avg[:,r], 'Pressure': pres_avg[:,r]}
+        # newdata = {'Point_0': x_coord, 'Point_1': y_coord, 'Point_2': z_coord, 'Velocity_0': x_vel_avg[:,r], 'Velocity_1': y_vel_avg[:,r], \
+        # 'Velocity_2': z_vel_avg[:,r], 'tau_11': tau_11_avg[:,r], 'tau_12': tau_12_avg[:,r], 'tau_13': tau_13_avg[:,r], 'tau_22': tau_22_avg[:,r], \
+        # 'tau_23': tau_23_avg[:,r], 'tau_33': tau_33_avg[:,r], 'k': k_avg[:,r], 'Pressure': pres_avg[:,r]}
+
+        newdata = {'Velocity_0': x_vel_avg[:,r], 'Velocity_1': y_vel_avg[:,r], 'Velocity_2': z_vel_avg[:,r],\
+             'tau_11': tau_11_avg[:,r], 'tau_12': tau_12_avg[:,r], 'tau_13': tau_13_avg[:,r], 'tau_22': tau_22_avg[:,r], \
+        'tau_23': tau_23_avg[:,r], 'tau_33': tau_33_avg[:,r], 'k': k_avg[:,r]}
 
         newdf = pd.DataFrame(newdata)
-        newfilename = 'LESPhaseAvgData/LESPhaseAvg_'+str(r) +'.csv'
+        newfilename = 'LESCellPhaseAvgData/LESPhaseAvg_'+str(r) +'.csv'
 
         ##### Write into .csv data files
         newdf.to_csv(newfilename, index=False)
@@ -292,5 +297,5 @@ def phase_avg_params_LES(res, foldername, paramfile):
 
 
 resolution = 100 # 100 time steps within 1 period
-phase_avg_params_LES(resolution, 'SolFlat_OFmesh_kcalc/', 'LES_kData_')
+phase_avg_params_LES(resolution, 'solFlat_CELLdata_ktauij/', 'SolFlatCellkcalc_')
 plt.show()
